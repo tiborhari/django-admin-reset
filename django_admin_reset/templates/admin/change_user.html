@@ -1,0 +1,12 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block form_top %}
+<p>
+<a href="{% url 'admin:password_reset_url' id=original.pk %}">
+{% blocktrans trimmed %}
+  To reset the password of this user, click here.
+{% endblocktrans %}
+</a>
+</p>
+{% endblock %}
