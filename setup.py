@@ -23,7 +23,8 @@ setup(
         'testing': [
             'pytest-cov>=2.5<3',
             'mock>=2,<3;python_version<"3.3"',
-            'pytest-django>=3.1.2,<4'],
+            'pytest-django>=3.1.2,<4',
+            'tox>=2.9,<3'],
         'docs': [
             'sphinx',
             'sphinx_rtd_theme'],
