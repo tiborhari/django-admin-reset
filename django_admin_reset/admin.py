@@ -71,8 +71,8 @@ class PasswordResetUserAdmin(UserAdmin):
                         'admin:password_reset_complete'},
                 name='password_reset_confirm'),
             url(r'^password_reset_complete/done/$',
-                password_reset_complete,
-                name='password_reset_complete'),
+                self.password_reset_complete,
+                name='password_reset_complete')
         ] + super(PasswordResetUserAdmin, self).get_urls()
 
     @never_cache
@@ -99,6 +99,13 @@ class PasswordResetUserAdmin(UserAdmin):
             'admin/password_reset_url.html',
             context={'user': user, 'url': url, 'title': _('Password reset'),
                      'timeout_days': settings.PASSWORD_RESET_TIMEOUT_DAYS})
+
+    @staticmethod
+    def password_reset_complete(*args, **kwargs):
+        kwargs.setdefault('extra_context', {})
+        kwargs['extra_context'].setdefault(
+            'login_url', reverse('admin:login'))
+        return password_reset_complete(*args, **kwargs)
 
 
 if admin.site.is_registered(get_user_model()):

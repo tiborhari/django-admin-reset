@@ -152,6 +152,10 @@ def test_password_reset_process(user_idx, logout, demo_users,
     user = User.objects.get(pk=user.pk)
     assert user.check_password('newpw')
 
+    res = client.get(res.url)
+    assert res.status_code == 200
+    assert reverse('admin:login') in res.content.decode('utf-8')
+
 
 @mark.parametrize('user_idx', [0, 1])
 @mark.parametrize('logout', [True, False])
