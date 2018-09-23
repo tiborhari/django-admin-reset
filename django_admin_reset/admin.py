@@ -8,12 +8,12 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UsernameField
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.contrib.auth.views import password_reset_complete
-from django.contrib.auth.views import password_reset_confirm
+from django.contrib.auth.views import PasswordResetCompleteView
+from django.contrib.auth.views import PasswordResetConfirmView
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.template.response import TemplateResponse
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_text, force_bytes
 from django.utils.html import escape
 from django.utils.http import urlsafe_base64_encode
@@ -50,6 +50,14 @@ class ResetUserChangeForm(UserChangeForm):
             'the link on top of this form.')
 
 
+class AdminResetCompleteView(PasswordResetCompleteView):
+    def get_context_data(self, **kwargs):
+        context = super(AdminResetCompleteView,
+                        self).get_context_data(**kwargs)
+        context['login_url'] = reverse('admin:login')
+        return context
+
+
 class PasswordResetUserAdmin(UserAdmin):
     add_form = UserCreationForm
     add_form_template = 'admin/add_user_form.html'
@@ -66,12 +74,11 @@ class PasswordResetUserAdmin(UserAdmin):
                 name='password_reset_url'),
             url(r'^password_reset_confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/'
                 r'(?P<token>[0-9A-Za-z]+-[0-9A-Za-z]+)/$',
-                password_reset_confirm,
-                kwargs={'post_reset_redirect':
-                        'admin:password_reset_complete'},
+                PasswordResetConfirmView.as_view(
+                    success_url=reverse_lazy('admin:password_reset_complete')),
                 name='password_reset_confirm'),
             url(r'^password_reset_complete/done/$',
-                self.password_reset_complete,
+                AdminResetCompleteView.as_view(),
                 name='password_reset_complete')
         ] + super(PasswordResetUserAdmin, self).get_urls()
 
@@ -99,13 +106,6 @@ class PasswordResetUserAdmin(UserAdmin):
             'admin/password_reset_url.html',
             context={'user': user, 'url': url, 'title': _('Password reset'),
                      'timeout_days': settings.PASSWORD_RESET_TIMEOUT_DAYS})
-
-    @staticmethod
-    def password_reset_complete(*args, **kwargs):
-        kwargs.setdefault('extra_context', {})
-        kwargs['extra_context'].setdefault(
-            'login_url', reverse('admin:login'))
-        return password_reset_complete(*args, **kwargs)
 
 
 if admin.site.is_registered(get_user_model()):

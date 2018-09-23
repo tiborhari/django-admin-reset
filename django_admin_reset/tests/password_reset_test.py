@@ -1,6 +1,7 @@
 from binascii import b2a_hex
 from contextlib import contextmanager
 from re import search, sub
+from sys import version_info
 try:
     from unittest.mock import patch
 except ImportError:
@@ -55,7 +56,10 @@ def staff_with_perm(request, admin_user, client):
     if is_admin:
         client.login(username='admin', password='password')
         yield admin_user
-        raise StopIteration
+        if version_info[0] == 2:
+            raise StopIteration
+        else:
+            return
 
     user = User(username='staff', is_staff=True)
     user.set_password('staff')
@@ -96,7 +100,10 @@ def get_reset_url(user, client):
     return search(pattern, body).group('url')
 
 
-def get_csrf_token(response):
+def get_csrf_token(client, url):
+    response = client.get(url)
+    if response.status_code == 302:
+        response = client.get(response.url)
     assert response.status_code == 200
     body = response.content.decode('utf-8')
     token_pattern = r'csrfmiddlewaretoken.*(?P<token>)'
@@ -138,11 +145,15 @@ def test_password_reset_process(user_idx, logout, demo_users,
     if logout:
         client.logout()
 
-    token = get_csrf_token(client.get(url))
+    token = get_csrf_token(client, url)
 
     user = User.objects.get(pk=user.pk)
     assert not user.check_password('newpw')
 
+    res = client.get(url)
+    assert res.status_code == 302
+    assert 'set-password' in res.url
+    url = res.url
     res = client.post(url, data={'csrfmiddlewaretoken': token,
                                  'new_password1': 'newpw',
                                  'new_password2': 'newpw'})
@@ -176,7 +187,7 @@ def test_other_user(user_idx, logout, demo_users,
                      'password_reset_confirm/%s/' % change_uidb64,
                      token_user_url)
 
-    token = get_csrf_token(client.get(token_user_url))
+    token = get_csrf_token(client, token_user_url)
     assert_invalid_url(client, forged_url, token,
                        [change_user.pk, token_user.pk])
 
@@ -203,7 +214,7 @@ def test_invalid_token(user_idx, logout, replace,
     if logout:
         client.logout()
 
-    token = get_csrf_token(client.get(url))
+    token = get_csrf_token(client, url)
     invalid_url = sub(r'/(?P<ts>[^/-]+)-(?P<hash>[^/-]+)/$', replace, url)
     assert invalid_url != url
 
@@ -219,7 +230,7 @@ def test_invalid_uidb64(logout, demo_users, staff_with_perm, client):
     if logout:
         client.logout()
 
-    token = get_csrf_token(client.get(url))
+    token = get_csrf_token(client, url)
     invalid_uidb64 = force_text(
         urlsafe_base64_encode(force_bytes(invalid_uid)))
     invalid_url = sub(r'/[^/]+(/[^/]+/)$', r'/%s\1' % invalid_uidb64, url)
@@ -238,7 +249,7 @@ def test_expired_token(user_idx, logout,
     if logout:
         client.logout()
 
-    token = get_csrf_token(client.get(url))
+    token = get_csrf_token(client, url)
 
     future_date = date.today() + timedelta(
         days=settings.PASSWORD_RESET_TIMEOUT_DAYS + 1)
@@ -270,7 +281,7 @@ def test_admin_ui_add_user(staff_with_perm, client):
     res = client.get(reverse('admin:auth_user_add'))
     assert res.status_code == 200
 
-    token = get_csrf_token(res)
+    token = get_csrf_token(client, reverse('admin:auth_user_add'))
     res = client.post(reverse('admin:auth_user_add'),
                       data={'csrfmiddlewaretoken': token,
                             'username': 'new_user'})

@@ -18,7 +18,7 @@ setup(
     packages=['django_admin_reset'],
     package_data={'django_admin_reset': ['templates/admin/*.html',
                                          'locale/*/LC_MESSAGES/*.[mp]o']},
-    install_requires=['django>=1.11,<2.1'],
+    install_requires=['django>=1.11,<2.2'],
     extras_require={
         'testing': [
             'pytest-cov>=2.5<3',
