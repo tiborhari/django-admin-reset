@@ -10,13 +10,14 @@ Features:
   containing the link for the password reset.
 * Remove the features to manually change the users' passwords from the admin
   interface (but see note below).
+
   * Remove the change password link from the user forms.
   * Remove the password inputs from the user add form.
 
 .. note::
-   It's still possible to manually change the users' passwords, by going to
+   It's still possible, to manually change the users' passwords by going to
    the ``/admin/auth/user/<uid>/password/`` page. Only the links,
-   pointing to this e are removed.
+   pointing to this page are removed.
 
 Installation
 ------------
