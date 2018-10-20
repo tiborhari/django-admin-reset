@@ -14,7 +14,7 @@ setup(
     long_description=long_description,
     author='Tibor Hári',
     author_email='hartib@gmail.com',
-    url='https://github/tiborhari/django-admin-reset/',
+    url='https://github.com/tiborhari/django-admin-reset/',
     packages=['django_admin_reset'],
     package_data={'django_admin_reset': ['templates/admin/*.html',
                                          'locale/*/LC_MESSAGES/*.[mp]o']},
