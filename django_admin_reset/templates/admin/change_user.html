@@ -3,7 +3,7 @@
 
 {% block form_top %}
 <p>
-<a href="{% url 'admin:password_reset_url' id=original.pk %}">
+<a href="{% url 'admin:password_reset_url' id=original.pk|lower %}">
 {% blocktrans trimmed %}
   To reset the password of this user, click here.
 {% endblocktrans %}
