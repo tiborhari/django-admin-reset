@@ -69,7 +69,7 @@ class PasswordResetUserAdmin(UserAdmin):
 
     def get_urls(self):
         return [
-            url('^(?P<id>\d+)/password_reset_url/$',
+            url('^(?P<id>[^/.]+)/password_reset_url/$',
                 self.admin_site.admin_view(self.password_reset_url),
                 name='password_reset_url'),
             url(r'^password_reset_confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/'
