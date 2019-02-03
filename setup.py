@@ -18,13 +18,13 @@ setup(
     packages=['django_admin_reset'],
     package_data={'django_admin_reset': ['templates/admin/*.html',
                                          'locale/*/LC_MESSAGES/*.[mp]o']},
-    install_requires=['django>=1.11,<2.2'],
+    install_requires=['django>=1.11,<2.3'],
     extras_require={
         'testing': [
             'pytest-cov>=2.5<3',
             'mock>=2,<3;python_version<"3.3"',
             'pytest-django>=3.1.2,<4',
-            'tox>=2.9,<3'],
+            'tox>=3.7,<4'],
         'docs': [
             'sphinx',
             'sphinx_rtd_theme'],

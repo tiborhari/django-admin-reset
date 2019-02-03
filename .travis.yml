@@ -1,7 +1,7 @@
 sudo: false
 language: python
 cache: pip
-install: pip install 'tox-travis>=0.10,<1'
+install: pip install 'tox-travis>=0.11,<1'
 script: tox
 stages:
 - test
