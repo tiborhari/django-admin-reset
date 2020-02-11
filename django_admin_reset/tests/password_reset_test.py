@@ -1,21 +1,16 @@
 from binascii import b2a_hex
 from contextlib import contextmanager
+from datetime import date, timedelta
+from os import urandom
 from re import search, sub
 from sys import version_info
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch  # Python < 3.3
-
-from datetime import date, timedelta
+from unittest.mock import patch
 
 from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
-from os import urandom
-
-from django.utils.encoding import force_text, force_bytes
+from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
 from pytest import fixture, mark
 
@@ -195,8 +190,8 @@ def test_other_user(user_idx, logout, demo_users,
 @mark.parametrize('user_idx', [0, 1])
 @mark.parametrize('logout', [True, False])
 @mark.parametrize('replace', [
-    lambda m: '/%s-%s/' % (force_text(b2a_hex(urandom(2))),
-                         force_text(b2a_hex(urandom(5)))),
+    lambda m: '/%s-%s/' % (force_str(b2a_hex(urandom(2))),
+                           force_str(b2a_hex(urandom(5)))),
     lambda m: '/%s-%s/' % (m.group('ts'), m.group('hash')[1:]),
     lambda m: '/%s-%s/' % (m.group('ts'), m.group('hash')[:-1]),
     lambda m: '/%s-%s/' % (m.group('ts'), '0' + m.group('hash')),
@@ -231,7 +226,7 @@ def test_invalid_uidb64(logout, demo_users, staff_with_perm, client):
         client.logout()
 
     token = get_csrf_token(client, url)
-    invalid_uidb64 = force_text(
+    invalid_uidb64 = force_str(
         urlsafe_base64_encode(force_bytes(invalid_uid)))
     invalid_url = sub(r'/[^/]+(/[^/]+/)$', r'/%s\1' % invalid_uidb64, url)
     assert invalid_url != url

@@ -2,20 +2,19 @@ dist: xenial
 sudo: false
 language: python
 cache: pip
-install: pip install 'tox-travis>=0.11,<1'
+install: pip install 'tox-travis>=0.12,<1'
 script: tox
 stages:
 - test
 - deploy
 jobs:
   include:
-  - python: 2.7
-  - python: 3.4
   - python: 3.5
   - python: 3.6
   - python: 3.7
+  - python: 3.8
   - stage: deploy
-    python: 3.6
+    python: 3.8
     install: pip install -e .[testing]
     script: skip
     before_deploy: tox -e package

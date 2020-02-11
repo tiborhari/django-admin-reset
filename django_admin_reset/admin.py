@@ -14,10 +14,10 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.template.response import TemplateResponse
 from django.urls import reverse, reverse_lazy
-from django.utils.encoding import force_text, force_bytes
+from django.utils.encoding import force_bytes, force_str
 from django.utils.html import escape
 from django.utils.http import urlsafe_base64_encode
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import never_cache
 
 
@@ -97,7 +97,7 @@ class PasswordResetUserAdmin(UserAdmin):
         token_generator = PasswordResetTokenGenerator()
         url = reverse(
             'admin:password_reset_confirm',
-            kwargs={'uidb64': force_text(
+            kwargs={'uidb64': force_str(
                 urlsafe_base64_encode(force_bytes(user.pk))),
                 'token': token_generator.make_token(user)})
         url = request.build_absolute_uri(url)
