@@ -81,7 +81,7 @@ class PasswordResetUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide', ),
-            'fields': (UserModel.USERNAME_FIELD,) + UserModel.REQUIRED_FIELDS
+            'fields': [UserModel.USERNAME_FIELD] + list(UserModel.REQUIRED_FIELDS)
         }),
     )
     form = ResetUserChangeForm
