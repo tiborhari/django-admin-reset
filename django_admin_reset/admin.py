@@ -20,6 +20,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import never_cache
 
+UserModel = get_user_model()
 
 class UserCreationForm(forms.ModelForm):
     class Meta:
@@ -58,14 +59,35 @@ class AdminResetCompleteView(PasswordResetCompleteView):
         return context
 
 
+if UserModel.USERNAME_FIELD == 'email':
+    PERSONAL_INFO_FIELDS = ('first_name', 'last_name')
+    LIST_DISPLAY = (UserModel.USERNAME_FIELD, 'first_name', 'last_name', 'is_staff')
+else:
+    PERSONAL_INFO_FIELDS = ('first_name', 'last_name', 'email')
+    LIST_DISPLAY = (UserModel.USERNAME_FIELD, 'email', 'first_name', 'last_name', 'is_staff')
+
+
 class PasswordResetUserAdmin(UserAdmin):
     add_form = UserCreationForm
     add_form_template = 'admin/add_user_form.html'
+    fieldsets = (
+        (None, {'fields': (UserModel.USERNAME_FIELD, 'password')}),
+        (_('Personal info'), {'fields': PERSONAL_INFO_FIELDS}),
+        (_('Permissions'), {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+        }),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
     add_fieldsets = (
-        (None, {'classes': ('wide',), 'fields': ('username',)}),
+        (None, {
+            'classes': ('wide', ),
+            'fields': [UserModel.USERNAME_FIELD] + list(UserModel.REQUIRED_FIELDS)
+        }),
     )
     form = ResetUserChangeForm
     change_form_template = 'admin/change_user.html'
+    list_display = LIST_DISPLAY
+    ordering = (UserModel.USERNAME_FIELD,)
 
     def get_urls(self):
         return [
@@ -108,6 +130,7 @@ class PasswordResetUserAdmin(UserAdmin):
                      'timeout_days': settings.PASSWORD_RESET_TIMEOUT_DAYS})
 
 
-if admin.site.is_registered(get_user_model()):
-    admin.site.unregister(get_user_model())
-admin.site.register(get_user_model(), PasswordResetUserAdmin)
+if admin.site.is_registered(UserModel):
+    admin.site.unregister(UserModel)
+admin.site.register(UserModel, PasswordResetUserAdmin)
+
