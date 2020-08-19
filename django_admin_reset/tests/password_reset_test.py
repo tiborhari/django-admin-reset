@@ -1,18 +1,20 @@
 from binascii import b2a_hex
 from contextlib import contextmanager
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from os import urandom
 from re import search, sub
 from sys import version_info
 from unittest.mock import patch
 
-from django.conf import settings
+import django
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
 from pytest import fixture, mark
+
+from django_admin_reset.admin import _get_password_reset_token_expiry
 
 pytestmark = [mark.django_db]
 
@@ -246,11 +248,18 @@ def test_expired_token(user_idx, logout,
 
     token = get_csrf_token(client, url)
 
-    future_date = date.today() + timedelta(
-        days=settings.PASSWORD_RESET_TIMEOUT_DAYS + 1)
-    with patch('django.contrib.auth.tokens.PasswordResetTokenGenerator.'
-               '_today', return_value=future_date):
-        assert_invalid_url(client, url, token, [user.pk])
+    if django.VERSION < (3, 1):
+        future_date = date.today() + timedelta(
+            days=_get_password_reset_token_expiry() + 1)
+        with patch('django.contrib.auth.tokens.PasswordResetTokenGenerator.'
+                   '_today', return_value=future_date):
+            assert_invalid_url(client, url, token, [user.pk])
+    else:
+        future_date = datetime.now() + timedelta(
+            days=_get_password_reset_token_expiry() + 1)
+        with patch('django.contrib.auth.tokens.PasswordResetTokenGenerator.'
+                   '_now', return_value=future_date):
+            assert_invalid_url(client, url, token, [user.pk])
 
 
 @mark.parametrize('user_idx', [0, 1])
