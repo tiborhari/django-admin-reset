@@ -70,10 +70,12 @@ class AdminResetCompleteView(PasswordResetCompleteView):
 
 if UserModel.USERNAME_FIELD == 'email':
     PERSONAL_INFO_FIELDS = ('first_name', 'last_name')
-    LIST_DISPLAY = (UserModel.USERNAME_FIELD, 'first_name', 'last_name', 'is_staff')
+    LIST_DISPLAY = (UserModel.USERNAME_FIELD, 'first_name', 'last_name',
+                    'is_staff')
 else:
     PERSONAL_INFO_FIELDS = ('first_name', 'last_name', 'email')
-    LIST_DISPLAY = (UserModel.USERNAME_FIELD, 'email', 'first_name', 'last_name', 'is_staff')
+    LIST_DISPLAY = (UserModel.USERNAME_FIELD, 'email', 'first_name',
+                    'last_name', 'is_staff')
 
 
 class PasswordResetUserAdmin(UserAdmin):
@@ -83,14 +85,16 @@ class PasswordResetUserAdmin(UserAdmin):
         (None, {'fields': (UserModel.USERNAME_FIELD, 'password')}),
         (_('Personal info'), {'fields': PERSONAL_INFO_FIELDS}),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups',
+                       'user_permissions'),
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide', ),
-            'fields': [UserModel.USERNAME_FIELD] + list(UserModel.REQUIRED_FIELDS)
+            'fields': [UserModel.USERNAME_FIELD] + list(
+                UserModel.REQUIRED_FIELDS)
         }),
     )
     form = ResetUserChangeForm
@@ -106,7 +110,8 @@ class PasswordResetUserAdmin(UserAdmin):
             re_path(r'^password_reset_confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/'
                     r'(?P<token>[0-9A-Za-z]+-[0-9A-Za-z]+)/$',
                     PasswordResetConfirmView.as_view(
-                        success_url=reverse_lazy('admin:password_reset_complete')),
+                        success_url=reverse_lazy(
+                            'admin:password_reset_complete')),
                     name='password_reset_confirm'),
             re_path(r'^password_reset_complete/done/$',
                     AdminResetCompleteView.as_view(),
@@ -142,4 +147,3 @@ class PasswordResetUserAdmin(UserAdmin):
 if admin.site.is_registered(UserModel):
     admin.site.unregister(UserModel)
 admin.site.register(UserModel, PasswordResetUserAdmin)
-

@@ -198,10 +198,10 @@ def test_other_user(user_idx, logout, demo_users,
     lambda m: '/%s-%s/' % (m.group('ts'), m.group('hash')[:-1]),
     lambda m: '/%s-%s/' % (m.group('ts'), '0' + m.group('hash')),
     lambda m: '/%s-%s/' % (m.group('ts'), m.group('hash') + '0'),
-    lambda m: '/%s-%s/' % (m.group('ts'), ('1' if m.group('hash')[0] == '0'
-                                         else '0') + m.group('hash')[1:]),
-    lambda m: '/%s-%s/' % (m.group('ts'), m.group('hash')[:-1] +
-                         ('1' if m.group('hash')[-1] == '0' else '0')),
+    lambda m: '/%s-%s/' % (m.group('ts'), (
+            '1' if m.group('hash')[0] == '0' else '0') + m.group('hash')[1:]),
+    lambda m: '/%s-%s/' % (m.group('ts'), m.group('hash')[:-1] + (
+            '1' if m.group('hash')[-1] == '0' else '0')),
     lambda m: '/%s-%s/' % (m.group('ts'), m.group('hash') + '0')])
 def test_invalid_token(user_idx, logout, replace,
                        demo_users, staff_with_perm, client):
