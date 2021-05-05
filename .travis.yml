@@ -1,5 +1,5 @@
 dist: xenial
-sudo: false
+os: linux
 language: python
 cache: pip
 install: pip install 'tox-travis>=0.12,<1'
