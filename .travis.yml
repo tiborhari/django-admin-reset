@@ -13,8 +13,9 @@ jobs:
   - python: 3.6
   - python: 3.7
   - python: 3.8
+  - python: 3.9
   - stage: deploy
-    python: 3.8
+    python: 3.9
     install: pip install -e .[testing]
     script: skip
     before_deploy: tox -e package
