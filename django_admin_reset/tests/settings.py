@@ -27,6 +27,7 @@ PASSWORD_HASHERS = ['django.contrib.auth.hashers.SHA1PasswordHasher']
 SECRET_KEY = '!!!INSECURE!!! 2OQcxcgohdo= !!!INSECURE!!!'
 ROOT_URLCONF = 'django_admin_reset.tests.urls'
 STATIC_URL = '/static/'
+USE_TZ = True
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

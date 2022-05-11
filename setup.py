@@ -18,19 +18,19 @@ setup(
     packages=['django_admin_reset'],
     package_data={'django_admin_reset': ['templates/admin/*.html',
                                          'locale/*/LC_MESSAGES/*.[mp]o']},
-    python_requires='>=3.5, <4',
-    install_requires=['django>=2.2,<3.3'],
+    python_requires='>=3.6, <4',
+    install_requires=['django>=3.2,<4.1'],
     extras_require={
         'testing': [
-            'flake8>=3.8.3,<3.9',
-            'pytest>=6.0.1,<6.1',
-            'pytest-cov>=2.10.1,<2.11',
-            'pytest-django>=3.9.0,<3.10',
-            'tox>=3.19.0,<3.20'],
+            'flake8~=3.9.2',
+            'pytest~=6.2.5',
+            'pytest-cov~=3.0.0',
+            'pytest-django~=3.10.0',
+            'tox~=3.25.0'],
         'docs': [
-            'sphinx>=3.2.1,<3.3',
-            'sphinx_rtd_theme>=0.5.0,<0.6'],
+            'sphinx~=4.5.0',
+            'sphinx_rtd_theme~=1.0.0'],
         'babel': [
-            'babel>=2.8.0,<2.9']
+            'babel~=2.10.1']
     },
 )

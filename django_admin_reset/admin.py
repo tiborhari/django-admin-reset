@@ -13,6 +13,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.template.response import TemplateResponse
 from django.urls import re_path, reverse, reverse_lazy
+from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes, force_str
 from django.utils.html import escape
 from django.utils.http import urlsafe_base64_encode
@@ -118,7 +119,7 @@ class PasswordResetUserAdmin(UserAdmin):
                     name='password_reset_complete')
         ] + super(PasswordResetUserAdmin, self).get_urls()
 
-    @never_cache
+    @method_decorator(never_cache)
     def password_reset_url(self, request, id, form_url=''):
         if not self.has_change_permission(request):
             raise PermissionDenied
