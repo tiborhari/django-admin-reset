@@ -22,7 +22,7 @@ setup(
     install_requires=['django>=3.2,<4.1'],
     extras_require={
         'testing': [
-            'flake8~=3.9.2',
+            'flake8~=5.0.4',
             'pytest~=6.2.5',
             'pytest-cov~=3.0.0',
             'pytest-django~=3.10.0',
