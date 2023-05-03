@@ -19,7 +19,7 @@ setup(
     package_data={'django_admin_reset': ['templates/admin/*.html',
                                          'locale/*/LC_MESSAGES/*.[mp]o']},
     python_requires='>=3.6, <4',
-    install_requires=['django>=3.2,<4.2'],
+    install_requires=['django>=3.2,<4.3'],
     extras_require={
         'testing': [
             'flake8~=5.0.4',
