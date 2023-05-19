@@ -22,8 +22,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-# This insecure hasher speeds up tests
-PASSWORD_HASHERS = ['django.contrib.auth.hashers.SHA1PasswordHasher']
+# Fastest password hasher (to speed up tests) from Django 5.1 onward
+PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 SECRET_KEY = '!!!INSECURE!!! 2OQcxcgohdo= !!!INSECURE!!!'
 ROOT_URLCONF = 'django_admin_reset.tests.urls'
 STATIC_URL = '/static/'
