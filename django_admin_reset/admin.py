@@ -1,4 +1,4 @@
-from django import forms
+from django import forms, VERSION
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.utils import unquote
@@ -23,13 +23,17 @@ from django.views.decorators.cache import never_cache
 UserModel = get_user_model()
 
 
-def _get_password_reset_token_expiry():
-    if hasattr(settings, 'PASSWORD_RESET_TIMEOUT'):
+def _get_password_reset_token_expiry_seconds():
+    if (
+        settings.is_overridden('PASSWORD_RESET_TIMEOUT_DAYS')
+        and not settings.is_overridden('PASSWORD_RESET_TIMEOUT')
+        and VERSION < (4,)
+    ):
+        # Django 3.0-
+        return settings.PASSWORD_RESET_TIMEOUT_DAYS * 60*60*24
+    else:
         # Django 3.1+
         return settings.PASSWORD_RESET_TIMEOUT
-    else:
-        # Django 3.0-
-        return settings.PASSWORD_RESET_TIMEOUT_DAYS
 
 
 class UserCreationForm(forms.ModelForm):
@@ -141,8 +145,11 @@ class PasswordResetUserAdmin(UserAdmin):
         return TemplateResponse(
             request,
             'admin/password_reset_url.html',
-            context={'user': user, 'url': url, 'title': _('Password reset'),
-                     'timeout_days': _get_password_reset_token_expiry()})
+            context={
+                'user': user, 'url': url, 'title': _('Password reset'),
+                'timeout_seconds': _get_password_reset_token_expiry_seconds(),
+            },
+        )
 
 
 if admin.site.is_registered(UserModel):

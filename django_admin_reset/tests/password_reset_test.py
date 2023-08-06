@@ -14,7 +14,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
 from pytest import fixture, mark
 
-from django_admin_reset.admin import _get_password_reset_token_expiry
+from django_admin_reset.admin import _get_password_reset_token_expiry_seconds
 
 pytestmark = [mark.django_db]
 
@@ -250,13 +250,13 @@ def test_expired_token(user_idx, logout,
 
     if django.VERSION < (3, 1):
         future_date = date.today() + timedelta(
-            days=_get_password_reset_token_expiry() + 1)
+            days=_get_password_reset_token_expiry_seconds() + 60)
         with patch('django.contrib.auth.tokens.PasswordResetTokenGenerator.'
                    '_today', return_value=future_date):
             assert_invalid_url(client, url, token, [user.pk])
     else:
         future_date = datetime.now() + timedelta(
-            days=_get_password_reset_token_expiry() + 1)
+            days=_get_password_reset_token_expiry_seconds() + 60)
         with patch('django.contrib.auth.tokens.PasswordResetTokenGenerator.'
                    '_now', return_value=future_date):
             assert_invalid_url(client, url, token, [user.pk])
