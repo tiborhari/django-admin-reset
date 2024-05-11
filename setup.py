@@ -28,8 +28,8 @@ setup(
             'pytest-django~=4.5.2',
             'tox~=4.5.2'],
         'docs': [
-            'sphinx~=6.2.1',
-            'sphinx_rtd_theme~=1.2.1'],
+            'sphinx~=7.3.7',
+            'sphinx_rtd_theme~=2.0.0'],
         'babel': [
             'babel~=2.12.1']
     },
