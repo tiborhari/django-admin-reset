@@ -20,7 +20,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
 ]
-requires-python = ">=3.8, <4"
+requires-python = ">=3.9, <4"
 dependencies = ["django>4.2,<6"]
 
 [project.optional-dependencies]
@@ -32,7 +32,7 @@ testing = [
   "tox~=4.5.2",
 ]
 docs = ["sphinx~=7.3.7", "sphinx_rtd_theme~=2.0.0"]
-babel = ["babel~=2.12.1"]
+babel = ["babel~=2.17.0"]
 
 [project.urls]
 Homepage = "https://github.com/tiborhari/django-admin-reset/"
@@ -40,7 +40,7 @@ Repository = "https://github.com/tiborhari/django-admin-reset.git"
 "Bug Tracker" = "https://github.com/tiborhari/django-admin-reset/issues"
 
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
