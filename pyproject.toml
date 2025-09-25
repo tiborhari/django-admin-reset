@@ -40,8 +40,12 @@ Repository = "https://github.com/tiborhari/django-admin-reset.git"
 "Bug Tracker" = "https://github.com/tiborhari/django-admin-reset/issues"
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.dynamic]
-version = { attr = "django_admin_reset.__version__" }
+[tool.setuptools]
+dynamic.version = { attr = "django_admin_reset.__version__" }
+include-package-data = false
+packages.find.include = ["django_admin_reset*"]
+packages.find.exclude = ["django_admin_reset.tests*"]
+package-data.django_admin_reset = ["templates/admin/*.html", "templates/auth/widgets/*.html", "locale/*/LC_MESSAGES/*.[mp]o"]
